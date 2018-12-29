@@ -1,7 +1,5 @@
 import React from "react";
 
-const dataSet = new Set();
-
 export class LocationList extends React.Component {
   constructor(props) {
     super(props);
@@ -15,7 +13,7 @@ export class LocationList extends React.Component {
   manageState = tag => {
     this.setState(
       {
-        choices: this.props.list.filter(choice => !dataSet.has(choice)),
+        choices: this.props.list.filter(choice => !this.selected.has(choice)),
         selected: dataSet
       },
       () => {
@@ -27,7 +25,7 @@ export class LocationList extends React.Component {
   addItem = e => {
     e.persist();
     if (e.target.value && !dataSet.has(e.target.value)) {
-      dataSet.add(e.target.value);
+      this.selected.add(e.target.value);
       this.manageState(this.selectItem.current);
     }
   };
