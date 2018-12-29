@@ -38,7 +38,7 @@ export class LocationList extends React.Component {
     dataSet.delete(e.target.value);
     this.manageState(this.selected.current);
   };
-
+//This is fun
   render() {
     return (
       <div>
