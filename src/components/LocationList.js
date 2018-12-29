@@ -5,33 +5,48 @@ const dataSet = new Set();
 export class LocationList extends React.Component {
   constructor(props) {
     super(props);
+    this.selectItem = React.createRef();
+    this.selected = React.createRef();
     this.state = {
       choices: this.props.list,
       selected: new Set()
     };
   }
+  manageState = tag => {
+    this.setState(
+      {
+        choices: this.props.list.filter(choice => !dataSet.has(choice)),
+        selected: dataSet
+      },
+      () => {
+        tag.selected = true;
+      }
+    );
+  };
+
+  addItem = e => {
+    e.persist();
+    if (e.target.value && !dataSet.has(e.target.value)) {
+      dataSet.add(e.target.value);
+      this.manageState(this.selectItem.current);
+    }
+  };
+
+  deleteItem = e => {
+    e.persist();
+    this.selected.current.focus();
+    dataSet.delete(e.target.value);
+    this.manageState(this.selected.current);
+  };
 
   render() {
-    const addItem = e => {
-      e.persist();
-
-      if (e.target.value && !dataSet.has(e.target.value)) {
-        dataSet.add(e.target.value);
-        this.setState({
-          choices: this.props.list.filter(choice => !dataSet.has(choice)),
-          selected: dataSet
-        });
-        console.log(dataSet);
-      }
-    };
-
-    const deleteItem = e => {};
-
     return (
       <div>
         <div>
-          <select id="select-list" size="4" onChange={addItem}>
-            <option value="">Select Location</option>
+          <select id="select-list" size="4" onChange={this.addItem}>
+            <option value="" ref={this.selectItem}>
+              Select Location
+            </option>
             {this.state.choices.map((choice, i) => {
               return (
                 <option key={i} value={choice}>
@@ -42,9 +57,11 @@ export class LocationList extends React.Component {
           </select>
         </div>
         <div>
-          <select id="selected" size="4" onChange={deleteItem}>
-            <option value="">Unselect location</option>
-            {this.state.selected.forEach(choice => {
+          <select id="selected" size="4" onChange={this.deleteItem}>
+            <option value="" ref={this.selected}>
+              Unselect location
+            </option>
+            {Array.from(this.state.selected).map(choice => {
               return (
                 <option key={choice} value={choice}>
                   {choice}
