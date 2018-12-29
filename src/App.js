@@ -22,12 +22,7 @@ const FieldService = {
   saveField(fieldJson) {}
 };
 
-//const myList = FieldService.getField().choices;
-
 class App extends Component {
-//  constructor(props) {
-//    super(props);
-//  }
 
   render() {
 
