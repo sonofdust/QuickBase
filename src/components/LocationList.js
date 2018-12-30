@@ -37,6 +37,7 @@ export class LocationList extends React.Component {
   handelCheck = e => {
     e.persist();
     this.isSorted = e.target.checked;
+    console.log(this.isSorted);
   };
 
   deleteItem = e => {
