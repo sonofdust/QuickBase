@@ -65,7 +65,7 @@ class App extends Component {
           });
         }
       }
-    ); 
+    );
   };
 
   handleSubmit = e => {
@@ -141,9 +141,6 @@ class App extends Component {
             <button>Save</button>
             <button>Cancel</button>
           </div>
-          {/* <div width="30%">
-          <LocationList list={FieldService.getField().choices} />
-        </div> */}
         </div>
       </form>
     );
