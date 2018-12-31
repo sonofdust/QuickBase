@@ -1,24 +1,29 @@
 import React from "react";
 
-let dataSet = new Set();
-
 export class LocationList extends React.Component {
   constructor(props) {
     super(props);
     this.selectItem = React.createRef();
     this.selected = React.createRef();
+    this.choicesList = localStorage.getItem("choices")
+      ? localStorage
+          .getItem("choices")
+          .toString()
+          .split(",")
+      : [];
     this.isSorted = false;
     this.state = {
       choices: this.props.list,
-      selected: new Set()
+      selected: this.choicesList
     };
   }
   manageState = tag => {
-    //    dataSet = this.handelCheck ? Array.from(dataSet).sort : dataSet;
     this.setState(
       {
-        choices: this.props.list.filter(choice => !dataSet.has(choice)),
-        selected: dataSet
+        choices: this.props.list.filter(
+          item => this.choicesList.indexOf(item) < 0
+        ),
+        selected: this.isSorted ? this.choicesList.sort() : this.choicesList
       },
       () => {
         tag.selected = true;
@@ -28,24 +33,26 @@ export class LocationList extends React.Component {
 
   addItem = e => {
     e.persist();
-    if (e.target.value && !dataSet.has(e.target.value)) {
-      dataSet.add(e.target.value);
+    if (e.target.value) {
+      this.choicesList.push(e.target.value);
       this.manageState(this.selectItem.current);
     }
-  };
-
-  handelCheck = e => {
-    e.persist();
-    this.isSorted = e.target.checked;
-    console.log(this.isSorted);
   };
 
   deleteItem = e => {
     e.persist();
     this.selected.current.focus();
-    dataSet.delete(e.target.value);
+    this.choicesList = this.choicesList.filter(item => item !== e.target.value);
+    console.log(this.choicesList);
     this.manageState(this.selected.current);
   };
+
+  handelCheck = e => {
+    e.persist();
+    this.isSorted = e.target.checked;
+    this.manageState(this.selected.current);
+  };
+
   //This is fun
   render() {
     return (
@@ -73,7 +80,7 @@ export class LocationList extends React.Component {
             <option value="" ref={this.selected}>
               ------ Unselect location ------
             </option>
-            {Array.from(this.state.selected).map(choice => {
+            {this.state.selected.map(choice => {
               return (
                 <option key={choice} value={choice}>
                   {choice}
