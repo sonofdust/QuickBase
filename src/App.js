@@ -17,21 +17,23 @@ const FieldService = {
         "Latin America",
         "Middle East and Africa"
       ],
-      displayAlpha: true,
+      displayAlpha: false,
       default: "North America"
     };
   },
-  saveField(fieldJson) {}
+  saveField(fieldJson) {
+    console.log(fieldJson);
+  }
 };
 
 class App extends Component {
   constructor() {
     super();
     this.state = FieldService.getField();
+    this.sortChoices();
   }
   deleteItem = e => {
     e.persist();
-    //    console.log(e.target.value);
     this.setState({
       choices: this.state.choices.filter(item => item !== e.target.value)
     });
@@ -44,12 +46,13 @@ class App extends Component {
     });
   };
 
-  //  sortChoices = ()=>{
-  //    this.setState(
-  //      {
-  //        choices: this.state.choices.sort()
-  //      }
-  //  }
+  sortChoices = () => {
+    if (this.state.displayAlpha) {
+      this.setState({
+        choices: this.state.choices.sort()
+      });
+    }
+  };
 
   handelSortCheckBox = e => {
     e.persist();
@@ -57,12 +60,9 @@ class App extends Component {
       {
         displayAlpha: e.target.checked
       },
-
       () => {
         if (this.state.displayAlpha) {
-          this.setState({
-            choices: this.state.choices.sort()
-          });
+          this.sortChoices();
         }
       }
     );
@@ -70,9 +70,7 @@ class App extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    console.log(e.target.checked);
-    //    const data = new FormData(e.target);
-    //    console.log( data.target.locationText);
+    console.log(this.state);
   };
 
   render() {
