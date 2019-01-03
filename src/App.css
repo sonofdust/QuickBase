@@ -1,5 +1,8 @@
+
+          
+
 .outter-div {
-  width: 40%;
+  width: 50%;
   border: 2px solid lightblue;
 }
 
@@ -31,3 +34,6 @@ tr:nth-child(even) {
 .tight-tr {
   width: 0%;
 }
+
+
+
