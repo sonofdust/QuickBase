@@ -1,3 +1,9 @@
+select {
+  display: block;
+  margin: 0 auto;
+  width: auto;
+}
+
 div.y-scroll {
   width: auto;
   height: 275px;
