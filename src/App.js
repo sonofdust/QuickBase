@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-//import { LocationList } from "./components/LocationList";
-// import { bindCallback } from "rxjs";
 import { Tooltip } from "./components/tooltip/tooltip";
-
+import { Labelinput } from "./components/labelinput/labelinput";
 import { Selectionlist } from "./components/selectionlist/selectionlist";
 import "./App.css";
 
@@ -27,13 +25,11 @@ const FieldService = {
   saveField(fieldJson) {
     const url = "http://www.mocky.io/v2/566061f21200008e3aabd919";
     console.log(fieldJson);
-
     fetch(url, {
       method: "post",
       body: JSON.stringify(fieldJson)
     })
       .then(function(response) {
-        //        console.log(response);
         return response.json();
       })
       .then(function(data) {
@@ -46,7 +42,6 @@ class App extends Component {
   constructor() {
     super();
     this.state = FieldService.getField();
-    this.labelNode = React.createRef();
     this.inputNode = React.createRef();
     this.submitBtn = React.createRef();
     this.sortChoices();
@@ -84,7 +79,7 @@ class App extends Component {
 
   validateInputValues = () => {
     this.submitBtn.disabled =
-    this.state.required && this.state.label.trim().length === 0;
+      this.state.required && this.state.label.trim().length === 0;
   };
 
   //*************************************** PROCESS LABLE INPUT ************************************************
@@ -103,7 +98,7 @@ class App extends Component {
   handelLabelChange = e => {
     this.setState(
       {
-        label: this.labelNode.value
+        label: e.target.value
       },
       () => {
         this.validateInputValues();
@@ -183,33 +178,14 @@ class App extends Component {
         <div className="inner-header-div">
           <span>Field Builder</span>
         </div>
-        <div className="container">
-          <span>
-            <input
-              id="require"
-              type="checkbox"
-              checked={this.state.required}
-              ref={node => {
-                this.requireCheckNode = node;
-              }}
-              onChange={this.handelRequiredCheckBox}
-            />
-            <Tooltip
-              label={"Label"}
-              message={
-                "Check box will require user to enter value.  If check and input blank builder will display an error."
-              }
-            />
-          </span>
-          <input
-            type="text"
-            ref={node => {
-              this.labelNode = node;
-            }}
-            defaultValue={this.state.label}
-            onChange={this.handelLabelChange}
-          />
-        </div>
+
+        <Labelinput
+          handelRequiredCheckBox={this.handelRequiredCheckBox}
+          label={this.state.label}
+          inputNode={this.inputNode}
+          handelLabelChange={this.handelLabelChange}
+          required={this.state.required}
+        />
 
         <div className="container">
           <Tooltip
@@ -232,10 +208,9 @@ class App extends Component {
           </span>
         </div>
 
-        <div className="container">
-          <div>
+        <div>
+          <div className="container">
             <span>
-              Regions
               <input
                 id="sort"
                 type="checkbox"
@@ -246,7 +221,7 @@ class App extends Component {
                 onChange={this.handelSortCheckBox}
               />
               <Tooltip
-                label={"Sort"}
+                label={"Sort Regions"}
                 message={"Check box to sort area list."}
               />
             </span>

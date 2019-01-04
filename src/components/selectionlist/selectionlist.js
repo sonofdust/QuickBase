@@ -7,17 +7,19 @@ export class Selectionlist extends React.Component {
 
   render() {
     return (
-      <div className="y-scroll">
-        {this.props.choices.map((choice, i) => {
-          return (
-            <div className="container row dont-break-out" key={i}>
-              <span>{choice}</span>
-              <button value={choice} onClick={this.props.deleteItem}>
-                -
-              </button>
-            </div>
-          );
-        })}
+      <div>
+          <select size="8" onChange={this.props.deleteItem}>
+            <option className="row">
+              ------ Click list item to unselect ------
+            </option>
+            {this.props.choices.map(choice => {
+              return (
+                <option key={choice} value={choice}  className="row">
+                  {choice}
+                </option>
+              );
+            })}
+          </select>
       </div>
     );
   }
