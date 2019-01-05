@@ -1,7 +1,6 @@
   option.break {
-    word-wrap: break-word;
     word-break: break-all;
-    width:auto;
+    white-space: normal;
 }
 
 .center {
