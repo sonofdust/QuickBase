@@ -25,6 +25,7 @@ const FieldService = {
   },
   saveField(fieldJson, setLoading) {
     delete fieldJson.loading;
+    localStorage.setItem("quickBase",JSON.stringify(fieldJson));
     const url = "http://www.mocky.io/v2/566061f21200008e3aabd919";
     setLoading(true);
     fetch(url, {
