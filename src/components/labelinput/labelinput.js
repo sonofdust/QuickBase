@@ -3,7 +3,6 @@ import { Tooltip } from "../tooltip/tooltip";
 import "./labelinput.css";
 
 export class Labelinput extends React.Component {
-
   render() {
     return (
       <div className="container">
@@ -12,9 +11,6 @@ export class Labelinput extends React.Component {
             id="require"
             type="checkbox"
             checked={this.props.required}
-            ref={node => {
-              this.requireCheckNode = node;
-            }}
             onChange={this.props.handelRequiredCheckBox}
           />
           <Tooltip
@@ -28,6 +24,11 @@ export class Labelinput extends React.Component {
           type="text"
           defaultValue={this.props.label}
           onChange={this.props.handelLabelChange}
+          className={
+            this.props.required && this.props.label.trim().length === 0
+              ? "error"
+              : ""
+          }
         />
       </div>
     );

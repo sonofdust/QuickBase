@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Tooltip } from "./components/tooltip/tooltip";
 import { Labelinput } from "./components/labelinput/labelinput";
 import { Selectionlist } from "./components/selectionlist/selectionlist";
+import { ReactLoadingView } from "react-spinner-component";
 import "./App.css";
 
 const FieldService = {
@@ -22,9 +23,10 @@ const FieldService = {
       default: "North America"
     };
   },
-  saveField(fieldJson) {
+  saveField(fieldJson, setLoading) {
+    delete fieldJson.loading;
     const url = "http://www.mocky.io/v2/566061f21200008e3aabd919";
-    console.log(fieldJson);
+    setLoading(true);
     fetch(url, {
       method: "post",
       body: JSON.stringify(fieldJson)
@@ -33,6 +35,8 @@ const FieldService = {
         return response.json();
       })
       .then(function(data) {
+        setLoading(false);
+        console.log(fieldJson);
         console.log(data);
       });
   }
@@ -41,11 +45,18 @@ const FieldService = {
 class App extends Component {
   constructor() {
     super();
+    FieldService.getField().loading = false;
     this.state = FieldService.getField();
     this.inputNode = React.createRef();
     this.submitBtn = React.createRef();
     this.sortChoices();
+    this.loading = false;
   }
+  setLoadingStatus = loading => {
+    this.setState({
+      loading
+    });
+  };
 
   deleteItem = e => {
     e.persist();
@@ -140,7 +151,7 @@ class App extends Component {
   //*************************** PRECESS SUBMIT AND CLEAR ***************************************
   postJSON = () => {
     //Default must be added before submitted
-
+    this.loading = true;
     if (this.state.choices.indexOf(this.state.default) < 0) {
       this.setState(
         {
@@ -148,16 +159,17 @@ class App extends Component {
         },
         () => {
           this.sortChoices();
-          FieldService.saveField(this.state);
+          FieldService.saveField(this.state, this.setLoadingStatus);
         }
       );
     } else {
-      FieldService.saveField(this.state);
+      FieldService.saveField(this.state, this.setLoadingStatus);
     }
   };
   handleSubmit = e => {
     e.persist();
     e.preventDefault();
+    FieldService.loading = true;
     if (this.inputNode.value.length > 0) {
       const msg = `${
         this.inputNode.value
@@ -175,41 +187,45 @@ class App extends Component {
   render() {
     return (
       <div className="outter-div">
-        <div className="inner-header-div">
-          <span>Field Builder</span>
-        </div>
-
-        <Labelinput
-          handelRequiredCheckBox={this.handelRequiredCheckBox}
-          label={this.state.label}
-          inputNode={this.inputNode}
-          handelLabelChange={this.handelLabelChange}
-          required={this.state.required}
-        />
-
-        <div className="container">
-          <Tooltip
-            label={"Input list value:"}
-            message={
-              "Location input field to be added to the list.  Press Enter or click '+' button."
-            }
+        <ReactLoadingView
+          loading={this.state.loading}
+          bgColor="white"
+          spinnerColor="blace"
+          textColor="black"
+          textStyle="100"
+          LoaderView="line-scale"
+          text="Processing."
+          customheight="100%"
+        >
+          <h2 className="center">Field Builder</h2>
+          <Labelinput
+            handelRequiredCheckBox={this.handelRequiredCheckBox}
+            label={this.state.label}
+            inputNode={this.inputNode}
+            handelLabelChange={this.handelLabelChange}
+            required={this.state.required}
           />
-          <span>
-            <input
-              type="text"
-              ref={node => {
-                this.inputNode = node;
-              }}
-              onKeyPress={this.handleListInputKeyPress}
-              onChange={this.handleInputListChange}
-              defaultValue={this.state.default}
+          <div className="container center">
+            <Tooltip
+              label={"Input list value:"}
+              message={
+                "Location input field to be added to the list.  Press Enter or click '+' button."
+              }
             />
-            <button onClick={this.addToList}>+</button>
-          </span>
-        </div>
-
-        <div>
-          <div className="container">
+            <span>
+              <input
+                type="text"
+                ref={node => {
+                  this.inputNode = node;
+                }}
+                onKeyPress={this.handleListInputKeyPress}
+                onChange={this.handleInputListChange}
+                defaultValue={this.state.default}
+              />
+              <button onClick={this.addToList}>+</button>
+            </span>
+          </div>
+          <div className="center">
             <span>
               <input
                 id="sort"
@@ -226,23 +242,22 @@ class App extends Component {
               />
             </span>
           </div>
-        </div>
-        <Selectionlist
-          choices={this.state.choices}
-          deleteItem={this.deleteItem}
-        />
-
-        <div>
-          <button
-            ref={node => {
-              this.submitBtn = node;
-            }}
-            onClick={this.handleSubmit}
-          >
-            Sumbit
-          </button>
-          <button>Cancel</button>
-        </div>
+          <Selectionlist
+            choices={this.state.choices}
+            deleteItem={this.deleteItem}
+          />
+          <div className="container center">
+            <button
+              ref={node => {
+                this.submitBtn = node;
+              }}
+              onClick={this.handleSubmit}
+            >
+              Sumbit
+            </button>
+            <button>Cancel</button>
+          </div>
+        </ReactLoadingView>
       </div>
     );
   }

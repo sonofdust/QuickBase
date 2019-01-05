@@ -1,11 +1,24 @@
-
-          
-
-.outter-div {
-  width: 50%;
-  border: 2px solid lightblue;
+h2{
+  background-color: lightblue;
+  border-radius: 5px;
 }
 
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.outter-div {
+  width: 350px;
+  height: 350px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -175px;
+  margin-left: -175px;
+}
 .inner-header-div {
   display: flex;
   align-items: center;
@@ -18,14 +31,14 @@
 .container {
   padding: 5px;
   display: flex;
-  justify-content: space-between;
+  padding: 10px;
+  justify-content:space-evenly;
 }
 
 table {
   border: 1px solid #dddddd;
   width: 100%;
 }
-
 
 tr:nth-child(even) {
   background-color: #dddddd;
@@ -34,6 +47,3 @@ tr:nth-child(even) {
 .tight-tr {
   width: 0%;
 }
-
-
-
