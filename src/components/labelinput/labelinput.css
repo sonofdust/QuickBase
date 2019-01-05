@@ -1,6 +1,9 @@
 .container {
-    padding: 5px;
-    display: flex;
-    justify-content: space-between;
-  }
-  
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+.error {
+  /* border: 2px solid red; */
+  background-color: pink;
+}

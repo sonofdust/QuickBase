@@ -9,7 +9,7 @@ export class Selectionlist extends React.Component {
     return (
       <div>
           <select size="8" onChange={this.props.deleteItem}>
-            <option className="row">
+            <option className="row center">
               ------ Click list item to unselect ------
             </option>
             {this.props.choices.map(choice => {

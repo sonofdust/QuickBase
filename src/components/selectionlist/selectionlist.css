@@ -1,7 +1,14 @@
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+ }
+
+
 select {
   display: block;
-  margin: 0 auto;
-  width: auto;
+  width: 100%;
 }
 
 div.y-scroll {
