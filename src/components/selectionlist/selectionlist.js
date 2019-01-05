@@ -14,7 +14,7 @@ export class Selectionlist extends React.Component {
             </option>
             {this.props.choices.map(choice => {
               return (
-                <option key={choice} value={choice}  className="row">
+                <option key={choice} value={choice}  className="row break">
                   {choice}
                 </option>
               );
