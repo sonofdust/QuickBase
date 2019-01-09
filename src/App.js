@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Tooltip } from "./components/tooltip/tooltip";
-import { Labelinput } from "./components/labelinput/labelinput";
 import { Selectionlist } from "./components/selectionlist/selectionlist";
-import { ReactLoadingView } from "react-spinner-component";
 import "./App.css";
 
 const FieldService = {
@@ -17,27 +15,40 @@ const FieldService = {
         "North America",
         "Eastern Europe",
         "Latin America",
-        "Middle East and Africa"
+        "Middle East and Africaasdfsa asfsafasf dfsadfsadfsdafsadf sdsafsdfsafsdasdfsdafsdaafsa",
+        "My Name is Nicholas D Roman I live in Lehi Utah and I am trying to find a job."
       ],
       displayAlpha: false,
       default: "North America"
     };
   },
+
   saveField(fieldJson, setLoading) {
     delete fieldJson.loading;
+    localStorage.setItem("quickBase", JSON.stringify(fieldJson));
     const url = "http://www.mocky.io/v2/566061f21200008e3aabd919";
     setLoading(true);
     fetch(url, {
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
       method: "post",
       body: JSON.stringify(fieldJson)
     })
       .then(function(response) {
+        setLoading(false);
         return response.json();
       })
       .then(function(data) {
         setLoading(false);
         console.log(fieldJson);
         console.log(data);
+      })
+      .catch(function(error) {
+        console.log(error);
+        setLoading(false);
       });
   }
 };
@@ -45,24 +56,20 @@ const FieldService = {
 class App extends Component {
   constructor() {
     super();
-    FieldService.getField().loading = false;
-    this.state = FieldService.getField();
-    this.inputNode = React.createRef();
+    this.state = { ...FieldService.getField(), loading: false };
     this.submitBtn = React.createRef();
     this.sortChoices();
-    this.loading = false;
   }
+
   setLoadingStatus = loading => {
     this.setState({
       loading
     });
   };
 
-  deleteItem = e => {
-    e.persist();
-    e.preventDefault();
+  deleteItem = item => {
     this.setState({
-      choices: this.state.choices.filter(item => item !== e.target.value)
+      choices: this.state.choices.filter(choice => choice !== item)
     });
   };
 
@@ -74,8 +81,9 @@ class App extends Component {
     }
   };
 
-  handelSortCheckBox = e => {
+  handleSortCheckBox = e => {
     e.persist();
+
     this.setState(
       {
         displayAlpha: e.target.checked
@@ -91,22 +99,23 @@ class App extends Component {
   validateInputValues = () => {
     this.submitBtn.disabled =
       this.state.required && this.state.label.trim().length === 0;
+
+//    if (this.submitBtn.disabled) {
+//      alert("If label required, label input cannot be blank.");
+//    }
   };
 
   //*************************************** PROCESS LABLE INPUT ************************************************
-  handelRequiredCheckBox = e => {
+
+  handleRequiredCheckBox = e => {
     e.persist();
-    this.setState(
-      {
-        required: e.target.checked
-      },
-      () => {
-        this.validateInputValues();
-      }
-    );
+    this.setState({
+      required: e.target.checked
+    });
   };
 
-  handelLabelChange = e => {
+  handleLabelChange = e => {
+    e.preventDefault();
     this.setState(
       {
         label: e.target.value
@@ -116,6 +125,7 @@ class App extends Component {
       }
     );
   };
+
   //*************************************** PROCESS LIST INPUT ************************************************
   addToList = () => {
     if (
@@ -166,14 +176,15 @@ class App extends Component {
       FieldService.saveField(this.state, this.setLoadingStatus);
     }
   };
+
   handleSubmit = e => {
     e.persist();
     e.preventDefault();
     FieldService.loading = true;
-    if (this.inputNode.value.length > 0) {
-      const msg = `${
-        this.inputNode.value
-      } has not been added to the list.  Do you wish to preceed?`;
+    if (this.inputNode.value.trim().length > 0) {
+      const msg = `${(
+        <span style="color:red">this.inputNode.value</span>
+      )} has not been added to the list.  Do you wish to preceed?`;
       if (window.confirm(msg)) {
         this.postJSON();
       } else {
@@ -185,79 +196,110 @@ class App extends Component {
   };
 
   render() {
+    if (this.state.loading)
+      return (
+        <div>
+          <img
+            className="outter-div"
+            src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
+          />
+        </div>
+      );
+
     return (
       <div className="outter-div">
-        <ReactLoadingView
-          loading={this.state.loading}
-          bgColor="white"
-          spinnerColor="blace"
-          textColor="black"
-          textStyle="100"
-          LoaderView="line-scale"
-          text="Processing."
-          customheight="100%"
-        >
-          <h2 className="center">Field Builder</h2>
-          <Labelinput
-            handelRequiredCheckBox={this.handelRequiredCheckBox}
-            label={this.state.label}
-            inputNode={this.inputNode}
-            handelLabelChange={this.handelLabelChange}
-            required={this.state.required}
-          />
-          <div className="container center">
+        <h2 className="center">Field Builder</h2>
+        {/* ***********************************************************************************************         */}
+        {/* <Labelinput
+          handleRequiredCheckBox={this.handleRequiredCheckBox}
+          label={this.state.label}
+          handleLabelChange={this.handleLabelChange}
+          required={this.state.required}
+        /> */}
+        <div className="container">
+          <span>
+            <input
+              id="require"
+              type="checkbox"
+              checked={this.state.required}
+              onChange={this.handleRequiredCheckBox}
+            />
             <Tooltip
-              label={"Input list value:"}
+              label={"Label"}
               message={
-                "Location input field to be added to the list.  Press Enter or click '+' button."
+                "Check box will require user to enter value.  If check and input blank builder will display an error."
               }
             />
-            <span>
-              <input
-                type="text"
-                ref={node => {
-                  this.inputNode = node;
-                }}
-                onKeyPress={this.handleListInputKeyPress}
-                onChange={this.handleInputListChange}
-                defaultValue={this.state.default}
-              />
-              <button onClick={this.addToList}>+</button>
-            </span>
-          </div>
-          <div className="center">
-            <span>
-              <input
-                id="sort"
-                type="checkbox"
-                ref={node => {
-                  this.sortCheckNode = node;
-                }}
-                checked={this.state.displayAlpha}
-                onChange={this.handelSortCheckBox}
-              />
-              <Tooltip
-                label={"Sort Regions"}
-                message={"Check box to sort area list."}
-              />
-            </span>
-          </div>
-          <Selectionlist
-            choices={this.state.choices}
-            deleteItem={this.deleteItem}
+          </span>
+          <input
+            type="text"
+            value={this.state.label}
+            onChange={this.handleLabelChange}
+            className={
+              this.state.required && this.state.label.trim().length === 0
+                ? "error"
+                : ""
+            }
           />
-          <div className="container center">
-            <button
+        </div>
+
+        {/* ***********************************************************************************************         */}
+        <div className="container center">
+          <Tooltip
+            label={"Input list value:"}
+            message={
+              "Location input field to be added to the list.  Press Enter or click '+' button."
+            }
+          />
+          <span>
+            <input
+              type="text"
               ref={node => {
-                this.submitBtn = node;
+                this.inputNode = node;
               }}
-              onClick={this.handleSubmit}
-            >
-              Sumbit
-            </button>
-            <button>Cancel</button>
-          </div>
-        </ReactLoadingView>
+              onKeyPress={this.handleListInputKeyPress}
+              onChange={this.handleInputListChange}
+              defaultValue={this.state.default}
+            />
+            <button onClick={this.addToList}>+</button>
+          </span>
+        </div>
+        {/* ***********************************************************************************************         */}
+        <div className="center container">
+          <span>
+            <input
+              id="sort"
+              type="checkbox"
+              ref={node => {
+                this.sortCheckNode = node;
+              }}
+              checked={this.state.displayAlpha}
+              onChange={this.handleSortCheckBox}
+            />
+            <Tooltip
+              label={"Sort Regions"}
+              message={"Check box to sort area list."}
+            />
+          </span>
+        </div>
+        {/* ***********************************************************************************************         */}
+        <Selectionlist
+          choices={this.state.choices}
+          deleteItem={this.deleteItem}
+        />
+        {/* ***********************************************************************************************         */}
+        <div className="container center">
+          <button
+            ref={node => {
+              this.submitBtn = node;
+            }}
+            onClick={this.handleSubmit}
+          >
+            Sumbit
+          </button>
+          <button>Clear</button>
+        </div>
+        {/* ***********************************************************************************************         */}
       </div>
     );
   }
