@@ -15,8 +15,7 @@ const FieldService = {
         "North America",
         "Eastern Europe",
         "Latin America",
-        "Middle East and Africaasdfsa asfsafasf dfsadfsadfsdafsadf sdsafsdfsafsdasdfsdafsdaafsa",
-        "My Name is Nicholas D Roman I live in Lehi Utah and I am trying to find a job."
+        "Middle East",
       ],
       displayAlpha: false,
       default: "North America"

@@ -1,3 +1,6 @@
+.btn {
+  cursor: pointer;
+}
 option.break {
   word-break: break-all;
   white-space: normal;
@@ -21,7 +24,6 @@ option.break {
   justify-content: flex-start;
   margin: auto;
   word-break: break-all;
-  cursor: pointer;
   padding: 2px;
 }
 

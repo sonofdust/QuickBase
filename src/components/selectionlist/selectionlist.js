@@ -8,7 +8,7 @@ export class Selectionlist extends React.Component {
       <div className="list-wrapper">
         {this.props.choices.map(choice => (
           <div key={choice} className="row option">
-            <button onClick={this.props.deleteItem.bind(this, choice)}>
+            <button className="btn" onClick={this.props.deleteItem.bind(this, choice)}>
               -
             </button>
             <Texterror text={choice} errorindex={40} />
