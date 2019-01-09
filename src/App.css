@@ -1,4 +1,4 @@
-h2{
+h2 {
   background-color: lightblue;
   border-radius: 5px;
 }
@@ -11,7 +11,7 @@ h2{
 }
 
 .outter-div {
-  width: 350px;
+  width: 400px;
   height: 350px;
   position: absolute;
   top: 50%;
@@ -32,7 +32,7 @@ h2{
   padding: 5px;
   display: flex;
   padding: 10px;
-  justify-content:space-evenly;
+  justify-content: space-evenly;
 }
 
 table {

@@ -16,12 +16,14 @@ const FieldService = {
         "North America",
         "Eastern Europe",
         "Latin America",
-        "Middle East and Africaasdfsafsdfasfasfsadfsadfsadfsadfsadfsdafsadfsdsafsdfsafsdasdfsdafsdaafsa"
+        "Middle East and Africaasdfsa asfsafasf dfsadfsadfsdafsadf sdsafsdfsafsdasdfsdafsdaafsa",
+        "My Name is Nicholas D Roman I live in Lehi Utah and I am trying to find a job."
       ],
       displayAlpha: false,
       default: "North America"
     };
   },
+
   saveField(fieldJson, setLoading) {
     delete fieldJson.loading;
     localStorage.setItem("quickBase", JSON.stringify(fieldJson));
@@ -59,17 +61,16 @@ class App extends Component {
     this.submitBtn = React.createRef();
     this.sortChoices();
   }
+
   setLoadingStatus = loading => {
     this.setState({
       loading
     });
   };
 
-  deleteItem = e => {
-    e.persist();
-    e.preventDefault();
+  deleteItem = item => {
     this.setState({
-      choices: this.state.choices.filter(item => item !== e.target.value)
+      choices: this.state.choices.filter(choice => choice !== item)
     });
   };
 
@@ -81,8 +82,9 @@ class App extends Component {
     }
   };
 
-  handelSortCheckBox = e => {
+  handleSortCheckBox = e => {
     e.persist();
+
     this.setState(
       {
         displayAlpha: e.target.checked
@@ -98,15 +100,15 @@ class App extends Component {
   validateInputValues = () => {
     this.submitBtn.disabled =
       this.state.required && this.state.label.trim().length === 0;
-    //   if (this.submitBtn.disabled) {
-    if (this.state.label.trim().length === 0) {
+
+    if (this.submitBtn.disabled) {
       alert("If label required, label input cannot be blank.");
     }
   };
 
   //*************************************** PROCESS LABLE INPUT ************************************************
 
-  handelRequiredCheckBox = e => {
+  handleRequiredCheckBox = e => {
     e.persist();
 
     this.setState({
@@ -114,7 +116,7 @@ class App extends Component {
     });
   };
 
-  handelLabelChange = e => {
+  handleLabelChange = e => {
     e.preventDefault();
     this.setState(
       {
@@ -125,6 +127,7 @@ class App extends Component {
       }
     );
   };
+
   //*************************************** PROCESS LIST INPUT ************************************************
   addToList = () => {
     if (
@@ -175,6 +178,7 @@ class App extends Component {
       FieldService.saveField(this.state, this.setLoadingStatus);
     }
   };
+
   handleSubmit = e => {
     e.persist();
     e.preventDefault();
@@ -197,7 +201,10 @@ class App extends Component {
     if (this.state.loading)
       return (
         <div>
-          <img className="outter-div" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" />
+          <img
+            className="outter-div"
+            src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
+          />
         </div>
       );
 
@@ -205,9 +212,9 @@ class App extends Component {
       <div className="outter-div">
         <h2 className="center">Field Builder</h2>
         <Labelinput
-          handelRequiredCheckBox={this.handelRequiredCheckBox}
+          handleRequiredCheckBox={this.handleRequiredCheckBox}
           label={this.state.label}
-          handelLabelChange={this.handelLabelChange}
+          handleLabelChange={this.handleLabelChange}
           required={this.state.required}
         />
         <div className="container center">
@@ -239,7 +246,7 @@ class App extends Component {
                 this.sortCheckNode = node;
               }}
               checked={this.state.displayAlpha}
-              onChange={this.handelSortCheckBox}
+              onChange={this.handleSortCheckBox}
             />
             <Tooltip
               label={"Sort Regions"}

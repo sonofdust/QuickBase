@@ -1,15 +1,27 @@
-  option.break {
-    word-break: break-all;
-    white-space: normal;
+option.break {
+  word-break: break-all;
+  white-space: normal;
 }
 
-.center {
+.list-wrapper {
+  border: 1px solid black;
+  padding: 15px;
+}
+
+.list-title {
+  display: flex;
+  justify-content: center;
+}
+
+.option {
   display: flex;
   align-items: center;
   justify-content: center;
   margin: auto;
- }
-
+  word-break: break-all;
+  cursor: pointer;
+  padding: 2px;
+}
 
 select {
   display: block;
