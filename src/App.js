@@ -15,8 +15,7 @@ const FieldService = {
         "North America",
         "Eastern Europe",
         "Latin America",
-        "Middle East and Africaasdfsa asfsafasf dfsadfsadfsdafsadf sdsafsdfsafsdasdfsdafsdaafsa",
-        "My Name is Nicholas D Roman I live in Lehi Utah and I am trying to find a job."
+        "Middle East"
       ],
       displayAlpha: false,
       default: "North America"
@@ -56,7 +55,15 @@ const FieldService = {
 class App extends Component {
   constructor() {
     super();
-    this.state = { ...FieldService.getField(), loading: false };
+    if (localStorage.length) {
+      this.state = {
+        ...JSON.parse(localStorage.getItem("quickBase")),
+        loading: false
+      };
+    } else {
+      this.state = { ...FieldService.getField(), loading: false };
+    }
+    //    this.state = { ...FieldService.getField(), loading: false };
     this.submitBtn = React.createRef();
     this.sortChoices();
   }
@@ -99,10 +106,6 @@ class App extends Component {
   validateInputValues = () => {
     this.submitBtn.disabled =
       this.state.required && this.state.label.trim().length === 0;
-
-//    if (this.submitBtn.disabled) {
-//      alert("If label required, label input cannot be blank.");
-//    }
   };
 
   //*************************************** PROCESS LABLE INPUT ************************************************
@@ -130,7 +133,8 @@ class App extends Component {
   addToList = () => {
     if (
       this.inputNode.value.trim().length > 0 &&
-      this.state.choices.indexOf(this.inputNode.value) < 0
+      this.state.choices.indexOf(this.inputNode.value) < 0 &&
+      this.state.choices.length <= 10
     ) {
       this.setState(
         {
@@ -146,6 +150,10 @@ class App extends Component {
         alert(`${this.inputNode.value} is aready in the list.`);
     }
     this.inputNode.value = "";
+    if(this.state.choices.length ===10)
+    {
+      alert("Length of Regions list cannot exceed 10 entries.");
+    }
   };
 
   handleInputListChange = e => {
@@ -182,9 +190,9 @@ class App extends Component {
     e.preventDefault();
     FieldService.loading = true;
     if (this.inputNode.value.trim().length > 0) {
-      const msg = `${(
-        <span style="color:red">this.inputNode.value</span>
-      )} has not been added to the list.  Do you wish to preceed?`;
+      const msg = `${
+        this.inputNode.value
+      } has not been added to the list.  Do you wish to preceed?`;
       if (window.confirm(msg)) {
         this.postJSON();
       } else {
@@ -194,7 +202,15 @@ class App extends Component {
       this.postJSON();
     }
   };
-
+  handleClear = e => {
+    this.setState({
+      label: "",
+      required: false,
+      choices: [],
+      displayAlpha: false,
+      default: "North America"
+    });
+  };
   render() {
     if (this.state.loading)
       return (
@@ -210,12 +226,6 @@ class App extends Component {
       <div className="outter-div">
         <h2 className="center">Field Builder</h2>
         {/* ***********************************************************************************************         */}
-        {/* <Labelinput
-          handleRequiredCheckBox={this.handleRequiredCheckBox}
-          label={this.state.label}
-          handleLabelChange={this.handleLabelChange}
-          required={this.state.required}
-        /> */}
         <div className="container">
           <span>
             <input
@@ -261,7 +271,9 @@ class App extends Component {
               onChange={this.handleInputListChange}
               defaultValue={this.state.default}
             />
-            <button onClick={this.addToList}>+</button>
+            <button className="btn" onClick={this.addToList}>
+              +
+            </button>
           </span>
         </div>
         {/* ***********************************************************************************************         */}
@@ -290,6 +302,7 @@ class App extends Component {
         {/* ***********************************************************************************************         */}
         <div className="container center">
           <button
+            className="btn"
             ref={node => {
               this.submitBtn = node;
             }}
@@ -297,7 +310,9 @@ class App extends Component {
           >
             Sumbit
           </button>
-          <button>Clear</button>
+          <button className="btn" onClick={this.handleClear}>
+            Clear
+          </button>
         </div>
         {/* ***********************************************************************************************         */}
       </div>
