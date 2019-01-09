@@ -4,7 +4,7 @@ option.break {
 }
 
 .list-wrapper {
-  border: 1px solid black;
+  border: none;
   padding: 15px;
   overflow: auto;
   height: 250px;

@@ -1,21 +1,8 @@
 import React from "react";
+import { Texterror } from "../texterror/texterror";
 import "./selectionlist.css";
 
 export class Selectionlist extends React.Component {
-  getOverflow(value, maxLimit) {
-    return (
-      <div
-        key={value}
-        className="row option"
-        onClick={this.props.deleteItem.bind(this, value)}
-      >
-        <span>
-          {value.substring(0, maxLimit)}
-          <font color="red">{value.substring(maxLimit)}</font>
-        </span>
-      </div>
-    );
-  }
 
   render() {
     return (
@@ -23,7 +10,18 @@ export class Selectionlist extends React.Component {
         <div className="list-title">
           ------ Click list item to unselect ------
         </div>
-        {this.props.choices.map(choice => this.getOverflow(choice, 49))}
+        {this.props.choices.map(choice => (
+          <div
+            key={choice}
+            className="row option"
+            onClick={this.props.deleteItem.bind(this, choice)}
+          >
+          <Texterror
+          text = {choice}
+          errorindex={40}
+          />
+          </div>
+        ))}
       </div>
     );
   }

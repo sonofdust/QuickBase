@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Tooltip } from "./components/tooltip/tooltip";
-//import { Labelinput } from "./components/labelinput/labelinput";
 import { Selectionlist } from "./components/selectionlist/selectionlist";
 import "./App.css";
 
@@ -266,7 +265,7 @@ class App extends Component {
           </span>
         </div>
         {/* ***********************************************************************************************         */}
-        <div className="center">
+        <div className="center container">
           <span>
             <input
               id="sort"
@@ -298,7 +297,7 @@ class App extends Component {
           >
             Sumbit
           </button>
-          <button>Cancel</button>
+          <button>Clear</button>
         </div>
         {/* ***********************************************************************************************         */}
       </div>
