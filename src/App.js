@@ -289,7 +289,7 @@ class App extends Component {
               onChange={this.handleSortCheckBox}
             />
             <Tooltip
-              label={"Sort Regions"}
+              label={"Sort List"}
               message={"Check box to sort area list."}
             />
           </span>
