@@ -1,25 +1,27 @@
 import React from "react";
+import { Texterror } from "../texterror/texterror";
 import "./selectionlist.css";
+
 export class Selectionlist extends React.Component {
-//  constructor(props) {
-//    super(props);
-//  }
 
   render() {
     return (
-      <div>
-          <select size="8" onChange={this.props.deleteItem}>
-            <option className="row center">
-              ------ Click list item to unselect ------
-            </option>
-            {this.props.choices.map(choice => {
-              return (
-                <option key={choice} value={choice}  className="row break">
-                  {choice}
-                </option>
-              );
-            })}
-          </select>
+      <div className="list-wrapper">
+        <div className="list-title">
+          ------ Click list item to unselect ------
+        </div>
+        {this.props.choices.map(choice => (
+          <div
+            key={choice}
+            className="row option"
+            onClick={this.props.deleteItem.bind(this, choice)}
+          >
+          <Texterror
+          text = {choice}
+          errorindex={40}
+          />
+          </div>
+        ))}
       </div>
     );
   }

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Tooltip } from "./components/tooltip/tooltip";
-import { Labelinput } from "./components/labelinput/labelinput";
 import { Selectionlist } from "./components/selectionlist/selectionlist";
 import "./App.css";
 
@@ -16,12 +15,14 @@ const FieldService = {
         "North America",
         "Eastern Europe",
         "Latin America",
-        "Middle East and Africa"
+        "Middle East and Africaasdfsa asfsafasf dfsadfsadfsdafsadf sdsafsdfsafsdasdfsdafsdaafsa",
+        "My Name is Nicholas D Roman I live in Lehi Utah and I am trying to find a job."
       ],
       displayAlpha: false,
       default: "North America"
     };
   },
+
   saveField(fieldJson, setLoading) {
     delete fieldJson.loading;
     localStorage.setItem("quickBase", JSON.stringify(fieldJson));
@@ -59,17 +60,16 @@ class App extends Component {
     this.submitBtn = React.createRef();
     this.sortChoices();
   }
+
   setLoadingStatus = loading => {
     this.setState({
       loading
     });
   };
 
-  deleteItem = e => {
-    e.persist();
-    e.preventDefault();
+  deleteItem = item => {
     this.setState({
-      choices: this.state.choices.filter(item => item !== e.target.value)
+      choices: this.state.choices.filter(choice => choice !== item)
     });
   };
 
@@ -81,8 +81,9 @@ class App extends Component {
     }
   };
 
-  handelSortCheckBox = e => {
+  handleSortCheckBox = e => {
     e.persist();
+
     this.setState(
       {
         displayAlpha: e.target.checked
@@ -98,23 +99,22 @@ class App extends Component {
   validateInputValues = () => {
     this.submitBtn.disabled =
       this.state.required && this.state.label.trim().length === 0;
-    //   if (this.submitBtn.disabled) {
-    if (this.state.label.trim().length === 0) {
-      alert("If label required, label input cannot be blank.");
-    }
+
+//    if (this.submitBtn.disabled) {
+//      alert("If label required, label input cannot be blank.");
+//    }
   };
 
   //*************************************** PROCESS LABLE INPUT ************************************************
 
-  handelRequiredCheckBox = e => {
+  handleRequiredCheckBox = e => {
     e.persist();
-
     this.setState({
       required: e.target.checked
     });
   };
 
-  handelLabelChange = e => {
+  handleLabelChange = e => {
     e.preventDefault();
     this.setState(
       {
@@ -125,6 +125,7 @@ class App extends Component {
       }
     );
   };
+
   //*************************************** PROCESS LIST INPUT ************************************************
   addToList = () => {
     if (
@@ -175,6 +176,7 @@ class App extends Component {
       FieldService.saveField(this.state, this.setLoadingStatus);
     }
   };
+
   handleSubmit = e => {
     e.persist();
     e.preventDefault();
@@ -197,19 +199,51 @@ class App extends Component {
     if (this.state.loading)
       return (
         <div>
-          <img className="outter-div" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" />
+          <img
+            className="outter-div"
+            src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
+          />
         </div>
       );
 
     return (
       <div className="outter-div">
         <h2 className="center">Field Builder</h2>
-        <Labelinput
-          handelRequiredCheckBox={this.handelRequiredCheckBox}
+        {/* ***********************************************************************************************         */}
+        {/* <Labelinput
+          handleRequiredCheckBox={this.handleRequiredCheckBox}
           label={this.state.label}
-          handelLabelChange={this.handelLabelChange}
+          handleLabelChange={this.handleLabelChange}
           required={this.state.required}
-        />
+        /> */}
+        <div className="container">
+          <span>
+            <input
+              id="require"
+              type="checkbox"
+              checked={this.state.required}
+              onChange={this.handleRequiredCheckBox}
+            />
+            <Tooltip
+              label={"Label"}
+              message={
+                "Check box will require user to enter value.  If check and input blank builder will display an error."
+              }
+            />
+          </span>
+          <input
+            type="text"
+            value={this.state.label}
+            onChange={this.handleLabelChange}
+            className={
+              this.state.required && this.state.label.trim().length === 0
+                ? "error"
+                : ""
+            }
+          />
+        </div>
+
+        {/* ***********************************************************************************************         */}
         <div className="container center">
           <Tooltip
             label={"Input list value:"}
@@ -230,7 +264,8 @@ class App extends Component {
             <button onClick={this.addToList}>+</button>
           </span>
         </div>
-        <div className="center">
+        {/* ***********************************************************************************************         */}
+        <div className="center container">
           <span>
             <input
               id="sort"
@@ -239,7 +274,7 @@ class App extends Component {
                 this.sortCheckNode = node;
               }}
               checked={this.state.displayAlpha}
-              onChange={this.handelSortCheckBox}
+              onChange={this.handleSortCheckBox}
             />
             <Tooltip
               label={"Sort Regions"}
@@ -247,10 +282,12 @@ class App extends Component {
             />
           </span>
         </div>
+        {/* ***********************************************************************************************         */}
         <Selectionlist
           choices={this.state.choices}
           deleteItem={this.deleteItem}
         />
+        {/* ***********************************************************************************************         */}
         <div className="container center">
           <button
             ref={node => {
@@ -260,8 +297,9 @@ class App extends Component {
           >
             Sumbit
           </button>
-          <button>Cancel</button>
+          <button>Clear</button>
         </div>
+        {/* ***********************************************************************************************         */}
       </div>
     );
   }

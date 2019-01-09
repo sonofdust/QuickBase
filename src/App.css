@@ -1,4 +1,9 @@
-h2{
+.error {
+  /* border: 2px solid red; */
+  background-color: pink;
+}
+
+h2 {
   background-color: lightblue;
   border-radius: 5px;
 }
@@ -11,10 +16,10 @@ h2{
 }
 
 .outter-div {
-  width: 350px;
+  width: 400px;
   height: 350px;
   position: absolute;
-  top: 50%;
+  top: 30%;
   left: 50%;
   margin-top: -175px;
   margin-left: -175px;
@@ -32,7 +37,7 @@ h2{
   padding: 5px;
   display: flex;
   padding: 10px;
-  justify-content:space-evenly;
+  justify-content: space-evenly;
 }
 
 table {
