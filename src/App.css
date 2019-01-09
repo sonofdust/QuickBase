@@ -1,3 +1,8 @@
+.error {
+  /* border: 2px solid red; */
+  background-color: pink;
+}
+
 h2 {
   background-color: lightblue;
   border-radius: 5px;

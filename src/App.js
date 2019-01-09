@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Tooltip } from "./components/tooltip/tooltip";
-import { Labelinput } from "./components/labelinput/labelinput";
+//import { Labelinput } from "./components/labelinput/labelinput";
 import { Selectionlist } from "./components/selectionlist/selectionlist";
 import "./App.css";
 
@@ -101,16 +101,15 @@ class App extends Component {
     this.submitBtn.disabled =
       this.state.required && this.state.label.trim().length === 0;
 
-    if (this.submitBtn.disabled) {
-      alert("If label required, label input cannot be blank.");
-    }
+//    if (this.submitBtn.disabled) {
+//      alert("If label required, label input cannot be blank.");
+//    }
   };
 
   //*************************************** PROCESS LABLE INPUT ************************************************
 
   handleRequiredCheckBox = e => {
     e.persist();
-
     this.setState({
       required: e.target.checked
     });
@@ -211,12 +210,41 @@ class App extends Component {
     return (
       <div className="outter-div">
         <h2 className="center">Field Builder</h2>
-        <Labelinput
+        {/* ***********************************************************************************************         */}
+        {/* <Labelinput
           handleRequiredCheckBox={this.handleRequiredCheckBox}
           label={this.state.label}
           handleLabelChange={this.handleLabelChange}
           required={this.state.required}
-        />
+        /> */}
+        <div className="container">
+          <span>
+            <input
+              id="require"
+              type="checkbox"
+              checked={this.state.required}
+              onChange={this.handleRequiredCheckBox}
+            />
+            <Tooltip
+              label={"Label"}
+              message={
+                "Check box will require user to enter value.  If check and input blank builder will display an error."
+              }
+            />
+          </span>
+          <input
+            type="text"
+            value={this.state.label}
+            onChange={this.handleLabelChange}
+            className={
+              this.state.required && this.state.label.trim().length === 0
+                ? "error"
+                : ""
+            }
+          />
+        </div>
+
+        {/* ***********************************************************************************************         */}
         <div className="container center">
           <Tooltip
             label={"Input list value:"}
@@ -237,6 +265,7 @@ class App extends Component {
             <button onClick={this.addToList}>+</button>
           </span>
         </div>
+        {/* ***********************************************************************************************         */}
         <div className="center">
           <span>
             <input
@@ -254,10 +283,12 @@ class App extends Component {
             />
           </span>
         </div>
+        {/* ***********************************************************************************************         */}
         <Selectionlist
           choices={this.state.choices}
           deleteItem={this.deleteItem}
         />
+        {/* ***********************************************************************************************         */}
         <div className="container center">
           <button
             ref={node => {
@@ -269,6 +300,7 @@ class App extends Component {
           </button>
           <button>Cancel</button>
         </div>
+        {/* ***********************************************************************************************         */}
       </div>
     );
   }

@@ -20,6 +20,7 @@ export class Selectionlist extends React.Component {
 
     return (
       <div
+        key={value}
         className="row option"
         onClick={this.props.deleteItem.bind(this, value)}
       >
