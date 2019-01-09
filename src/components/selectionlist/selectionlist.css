@@ -16,7 +16,7 @@ option.break {
 .option {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   margin: auto;
   word-break: break-all;
   cursor: pointer;
