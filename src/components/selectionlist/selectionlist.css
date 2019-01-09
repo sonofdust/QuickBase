@@ -6,6 +6,8 @@ option.break {
 .list-wrapper {
   border: 1px solid black;
   padding: 15px;
+  overflow: auto;
+  height: 250px;
 }
 
 .list-title {
