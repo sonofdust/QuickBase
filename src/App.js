@@ -133,7 +133,8 @@ class App extends Component {
   addToList = () => {
     if (
       this.inputNode.value.trim().length > 0 &&
-      this.state.choices.indexOf(this.inputNode.value) < 0
+      this.state.choices.indexOf(this.inputNode.value) < 0 &&
+      this.state.choices.length <= 10
     ) {
       this.setState(
         {
@@ -149,6 +150,10 @@ class App extends Component {
         alert(`${this.inputNode.value} is aready in the list.`);
     }
     this.inputNode.value = "";
+    if(this.state.choices.length ===10)
+    {
+      alert("Length of Regions list cannot exceed 10 entries.");
+    }
   };
 
   handleInputListChange = e => {
@@ -185,7 +190,9 @@ class App extends Component {
     e.preventDefault();
     FieldService.loading = true;
     if (this.inputNode.value.trim().length > 0) {
-      const msg = `${this.inputNode.value} has not been added to the list.  Do you wish to preceed?`;
+      const msg = `${
+        this.inputNode.value
+      } has not been added to the list.  Do you wish to preceed?`;
       if (window.confirm(msg)) {
         this.postJSON();
       } else {
