@@ -112,9 +112,14 @@ class App extends Component {
 
   handleRequiredCheckBox = e => {
     e.persist();
-    this.setState({
-      required: e.target.checked
-    });
+    this.setState(
+      {
+        required: e.target.checked
+      },
+      () => {
+        this.validateInputValues();
+      }
+    );
   };
 
   handleLabelChange = e => {
@@ -150,8 +155,7 @@ class App extends Component {
         alert(`${this.inputNode.value} is aready in the list.`);
     }
     this.inputNode.value = "";
-    if(this.state.choices.length ===10)
-    {
+    if (this.state.choices.length === 10) {
       alert("Length of Regions list cannot exceed 10 entries.");
     }
   };
@@ -256,7 +260,7 @@ class App extends Component {
         {/* ***********************************************************************************************         */}
         <div className="container center">
           <Tooltip
-            label={"Input list value:"}
+            label={"List value:"}
             message={
               "Location input field to be added to the list.  Press Enter or click '+' button."
             }
