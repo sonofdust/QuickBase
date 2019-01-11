@@ -22,6 +22,8 @@ h2 {
 
 .outter-div {
   width: 400px;
+  border-style:solid;
+  border-radius: 5px;
   height: 400px;
   position: absolute;
   top: 30%;
