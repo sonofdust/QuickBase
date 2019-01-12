@@ -10,7 +10,7 @@ option.break {
   border: none;
   padding: 5px;
   overflow: auto;
-  height: 250px;
+  /* height: 250px; */
 }
 
 .list-title {

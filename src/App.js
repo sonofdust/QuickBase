@@ -2,77 +2,21 @@ import React, { Component } from "react";
 import { Tooltip } from "./components/tooltip/tooltip";
 import { Selectionlist } from "./components/selectionlist/selectionlist";
 import "./App.css";
-
-const FieldService = {
-  getField() {
-    return {
-      label: "Sales Region",
-      required: false,
-      choices: [
-        "Asia",
-        "Australia",
-        "Western Europe",
-        "North America",
-        "Eastern Europe",
-        "Latin America",
-        "Middle East"
-      ],
-      displayAlpha: false,
-      default: "North America"
-    };
-  },
-
-  saveField(fieldJson, setLoading) {
-    delete fieldJson.loading;
-    localStorage.setItem("quickBase", JSON.stringify(fieldJson));
-    const url = "http://www.mocky.io/v2/566061f21200008e3aabd919";
-    setLoading(true);
-    fetch(url, {
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      },
-      method: "post",
-      body: JSON.stringify(fieldJson)
-    })
-      .then(function(response) {
-        setLoading(false);
-        return response.json();
-      })
-      .then(function(data) {
-        setLoading(false);
-        console.log(fieldJson);
-        console.log(data);
-      })
-      .catch(function(error) {
-        console.log(error);
-        setLoading(false);
-      });
-  }
-};
+import { ApiService } from "./services/api";
 
 class App extends Component {
+  submitBtnRefRef = null;
+
   constructor() {
     super();
-    if (localStorage.length) {
-      this.state = {
-        ...JSON.parse(localStorage.getItem("quickBase")),
-        loading: false
-      };
-    } else {
-      this.state = { ...FieldService.getField(), loading: false };
-    }
-    //    this.state = { ...FieldService.getField(), loading: false };
-    this.submitBtn = React.createRef();
-    this.sortChoices();
+
+    this.state = { ...ApiService.fetchData(), loading: false };
+    this.submitBtnRefRef = React.createRef();
   }
 
-  setLoadingStatus = loading => {
-    this.setState({
-      loading
-    });
-  };
+  componentDidMount() {
+    this.sortChoices();
+  }
 
   deleteItem = item => {
     this.setState({
@@ -88,237 +32,190 @@ class App extends Component {
     }
   };
 
-  handleSortCheckBox = e => {
-    e.persist();
-
-    this.setState(
-      {
-        displayAlpha: e.target.checked
-      },
-      () => {
-        if (this.state.displayAlpha) {
-          this.sortChoices();
-        }
-      }
-    );
+  handleSortCheckBox = () => {
+    if (this.state.displayAlpha) {
+      this.sortChoices();
+    }
   };
 
-  validateInputValues = () => {
-    this.submitBtn.disabled =
+  disableSubmitButton = () => {
+    this.submitBtnRef.disabled =
       this.state.required && this.state.label.trim().length === 0;
   };
 
-  //*************************************** PROCESS LABLE INPUT ************************************************
-
-  handleRequiredCheckBox = e => {
-    e.persist();
-    this.setState(
-      {
-        required: e.target.checked
-      },
-      () => {
-        this.validateInputValues();
-      }
-    );
-  };
-
   handleLabelChange = e => {
-    e.preventDefault();
     this.setState(
       {
         label: e.target.value
       },
       () => {
-        this.validateInputValues();
+        this.disableSubmitButton();
       }
     );
   };
 
-  //*************************************** PROCESS LIST INPUT ************************************************
   addToList = () => {
     if (
-      this.inputNode.value.trim().length > 0 &&
-      this.state.choices.indexOf(this.inputNode.value) < 0 &&
-      this.state.choices.length <= 10
+      this.inputRef.value.trim().length &&
+      this.state.choices.includes(this.inputRef.value)
     ) {
-      this.setState(
-        {
-          choices: [...this.state.choices, this.inputNode.value]
-        },
-        () => {
-          this.sortChoices();
-          this.validateInputValues();
-        }
-      );
-    } else {
-      if (this.inputNode.value.trim().length)
-        alert(`${this.inputNode.value} is aready in the list.`);
+      alert(`${this.inputRef.value} is aready in the list.`);
+      return;
     }
-    this.inputNode.value = "";
-    if (this.state.choices.length === 10) {
-      alert("Length of Regions list cannot exceed 10 entries.");
-    }
-  };
 
-  handleInputListChange = e => {
-    this.validateInputValues();
+    if (this.state.choices.length >= 10) {
+      alert("Length of Regions list cannot exceed 10 entries.");
+      return;
+    }
+
+    this.setState(
+      {
+        choices: [...this.state.choices, this.inputRef.value]
+      },
+      () => {
+        this.sortChoices();
+        this.disableSubmitButton();
+      }
+    );
   };
 
   handleListInputKeyPress = e => {
+    // 13 - enter key code.
     if (e.charCode === 13) {
       this.addToList();
     }
   };
 
-  //*************************** PRECESS SUBMIT AND CLEAR ***************************************
+  handleRequireCheckbox = e => {
+    this.setState({ required: e.target.checked });
+  };
+
+  hasError = () => {
+    return this.state.required && this.state.label.trim().length === 0;
+  };
+
   postJSON = () => {
-    //Default must be added before submitted
-    this.loading = true;
-    if (this.state.choices.indexOf(this.state.default) < 0) {
-      this.setState(
-        {
-          choices: [...this.state.choices, this.state.default]
-        },
-        () => {
-          this.sortChoices();
-          FieldService.saveField(this.state, this.setLoadingStatus);
-        }
-      );
-    } else {
-      FieldService.saveField(this.state, this.setLoadingStatus);
-    }
+    const { choices, defaultValue } = this.state;
+
+    this.setState(
+      {
+        choices: choices.includes(defaultValue)
+          ? this.state.choices
+          : [...this.state.choices, this.state.default],
+        loading: true
+      },
+      () => {
+        ApiService.postData(this.state)
+          .then(() => {
+            // TODO: Remove after testing.
+            setTimeout(() => {
+              this.setState({ loading: false });
+              this.sortChoices();
+            }, 1500);
+          })
+          .catch(error => {
+            console.error("error has occurred:", error);
+          });
+      }
+    );
   };
 
   handleSubmit = e => {
-    e.persist();
     e.preventDefault();
-    FieldService.loading = true;
-    if (this.inputNode.value.trim().length > 0) {
-      const msg = `${
-        this.inputNode.value
-      } has not been added to the list.  Do you wish to preceed?`;
-      if (window.confirm(msg)) {
-        this.postJSON();
-      } else {
-        this.inputNode.focus();
-      }
-    } else {
+
+    const msg = `${
+      this.inputRef.value
+    } has not been added to the list.  Do you wish to preceed?`;
+
+    if (window.confirm(msg)) {
       this.postJSON();
+    } else {
+      this.inputRef.focus();
     }
   };
-  handleClear = e => {
+
+  handleClear = () => {
     this.setState({
       label: "",
       required: false,
       choices: [],
       displayAlpha: false,
-      default: "North America"
+      defaultValue: "North America"
     });
   };
+
   render() {
-    if (this.state.loading)
+    if (this.state.loading) {
       return (
-        <div>
+        <div className="outer-div">
           <img
-            className="outter-div"
+            alt=""
             src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
           />
         </div>
       );
+    }
 
     return (
-      <div className="outter-div">
-        <h2 className="center">Field Builder</h2>
-        {/* ***********************************************************************************************         */}
-        <div className="container">
-          <span>
-            <input
-              id="require"
-              type="checkbox"
-              checked={this.state.required}
-              onChange={this.handleRequiredCheckBox}
-            />
-            <Tooltip
-              label={"Label"}
-              message={
-                "Check box will require user to enter value.  If check and input blank builder will display an error."
-              }
-            />
-          </span>
-          <input
-            type="text"
-            value={this.state.label}
-            onChange={this.handleLabelChange}
-            className={
-              this.state.required && this.state.label.trim().length === 0
-                ? "error"
-                : ""
-            }
-          />
-        </div>
+      <div className="outer-div">
+        <div className="content">
+          <h2>Field Builder</h2>
 
-        {/* ***********************************************************************************************         */}
-        <div className="container center">
-          <Tooltip
-            label={"List value:"}
-            message={
-              "Location input field to be added to the list.  Press Enter or click '+' button."
-            }
-          />
-          <span>
+          <div className="row-item">
+            <input type="checkbox" onChange={this.handleRequireCheckbox} />
+
+            <Tooltip
+              label="Label"
+              message="Check box will require user to enter value. If check and input blank builder will display an error."
+            />
             <input
               type="text"
-              ref={node => {
-                this.inputNode = node;
-              }}
-              onKeyPress={this.handleListInputKeyPress}
-              onChange={this.handleInputListChange}
-              defaultValue={this.state.default}
+              value={this.state.label}
+              onChange={this.handleLabelChange}
+              className={this.hasError() ? "error" : null}
             />
-            <button className="btn" onClick={this.addToList}>
-              +
-            </button>
-          </span>
-        </div>
-        {/* ***********************************************************************************************         */}
-        <div className="center container">
-          <span>
+          </div>
+
+          <div className="row-item">
+            <Tooltip
+              label="List value:"
+              message="Location input field to be added to the list.  Press Enter or click '+' button."
+            />
             <input
-              id="sort"
+              ref={node => (this.inputRef = node)}
+              onKeyPress={this.handleListInputKeyPress}
+              onChange={this.disableSubmitButton}
+              defaultValue={this.state.defaultValue}
+            />
+            <button onClick={this.addToList}>+</button>
+          </div>
+
+          <div className="row-item">
+            <input
               type="checkbox"
-              ref={node => {
-                this.sortCheckNode = node;
-              }}
               checked={this.state.displayAlpha}
               onChange={this.handleSortCheckBox}
             />
-            <Tooltip
-              label={"Sort List"}
-              message={"Check box to sort area list."}
+            <Tooltip label="Sort List" message="Check box to sort area list." />
+          </div>
+
+          <div className="row-item">
+            <Selectionlist
+              choices={this.state.choices}
+              deleteItem={this.deleteItem}
             />
-          </span>
+          </div>
+
+          <div className="actions">
+            <button
+              ref={node => (this.submitBtnRef = node)}
+              onClick={this.handleSubmit}
+            >
+              Submit
+            </button>
+            <button onClick={this.handleClear}>Clear</button>
+          </div>
         </div>
-        {/* ***********************************************************************************************         */}
-        <Selectionlist
-          choices={this.state.choices}
-          deleteItem={this.deleteItem}
-        />
-        {/* ***********************************************************************************************         */}
-        <div className="container center">
-          <button
-            className="btn"
-            ref={node => {
-              this.submitBtn = node;
-            }}
-            onClick={this.handleSubmit}
-          >
-            Sumbit
-          </button>
-          <button className="btn" onClick={this.handleClear}>
-            Clear
-          </button>
-        </div>
-        {/* ***********************************************************************************************         */}
       </div>
     );
   }
