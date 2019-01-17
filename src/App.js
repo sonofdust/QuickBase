@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Tooltip } from "./components/tooltip/tooltip";
-import { Selectionlist } from "./components/selectionlist/selectionlist";
+import { Tooltip } from "./components/tooltip";
+import { Selectionlist } from "./components/selection-list";
 import "./App.css";
 import { ApiService } from "./services/api";
 
@@ -33,9 +33,11 @@ class App extends Component {
   };
 
   handleSortCheckBox = () => {
-    if (this.state.displayAlpha) {
+    this.setState({
+      displayAlpha: !this.state.displayAlpha
+    }, () => {
       this.sortChoices();
-    }
+    });
   };
 
   disableSubmitButton = () => {
@@ -104,18 +106,18 @@ class App extends Component {
           : [...this.state.choices, this.state.default],
         loading: true
       },
-      () => {
-        ApiService.postData(this.state)
-          .then(() => {
-            // TODO: Remove after testing.
-            setTimeout(() => {
-              this.setState({ loading: false });
-              this.sortChoices();
-            }, 1500);
-          })
-          .catch(error => {
-            console.error("error has occurred:", error);
-          });
+      async () => {
+        try {
+          await ApiService.postData(this.state);
+
+          // Delays here to show spinner.
+          setTimeout(() => {
+            this.setState({ loading: false });
+            this.sortChoices();
+          }, 1500);
+        } catch (error) {
+          console.error("error has occurred:", error);
+        }
       }
     );
   };

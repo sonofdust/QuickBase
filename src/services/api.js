@@ -14,7 +14,7 @@ export const ApiService = {
       label: "Sales Region",
       required: false,
       choices: CHOICES,
-      displayAlpha: false,
+      displayAlpha: true,
       defaultValue: "North America"
     };
   },

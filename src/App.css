@@ -23,6 +23,7 @@ h2 {
   border: 1px solid black;
   border-radius: 5px;
   height: 400px;
+  overflow: auto;
   width: 400px;
 }
 
